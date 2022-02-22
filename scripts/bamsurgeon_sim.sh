@@ -58,8 +58,8 @@ ${python3} ${addsnv} -v ${snv} -f ${nbam} -r ${REF} -o ${sample}.simsnv.bam -p 8
 ${python3} ${addindel} -v ${indel} -f ${nbam} -r ${REF} -o ${sample}.simindel.bam -p 8 --aligner mem --picardjar ${picard} --mindepth 10 --maxdepth 1000000 --tmpdir addindel.tmp
 samtools sort -@ 8 -o ${sample}.simsnv.sort.bam ${sample}.simsnv.bam
 samtools sort -@ 8 -o ${sample}.simindel.sort.bam ${sample}.simindel.bam
-samtools index -@ 8 ${sample}.simsnv.sort.bam && rm -f ${sample}.simsnv.bam
-samtools index -@ 8 ${sample}.simindel.sort.bam && rm -f ${sample}.simindel.bam
+samtools index -@ 8 ${sample}.simsnv.sort.bam
+samtools index -@ 8 ${sample}.simindel.sort.bam
 
 if [[ -z "${lumi}" ]];then
 # bcftools mpileup
@@ -69,8 +69,10 @@ bcftools mpileup -R ${bed} --max-depth 99999 --max-idepth 99999 --min-BQ 0 -f ${
 bcftools index -f ${sample}_sim.indel.mpileup.vcf.gz
 bcftools concat -aD ${sample}_sim.snv.mpileup.vcf.gz ${sample}_sim.indel.mpileup.vcf.gz -Oz -o ${sample}_sim.mpileup.vcf.gz
 bcftools index -f ${sample}_sim.mpileup.vcf.gz
-rm -f ${sample}_sim.*.mpileup.vcf.gz*
+
 else
 # consensus & mpileup
-echo "bamsurgeon will stuck in sim-rmdup evaluation!"
+$(dirname "$0")/consensus.sh -i ${sample}_sim_1.fq.gz -j ${sample}_sim_2.gz -l ${lumi} -s ${sample}_sim
+bcftools mpileup -R ${bed} --max-depth 99999 --max-idepth 99999 --min-BQ 0 -f ${REF} -a AD,ADF,ADR,DP,SP ${sample}_sim.consensus.align.bam |bcftools norm -f ${REF} -m- -Oz -o ${sample}_sim.mpileup.vcf.gz
+bcftools index -f ${sample}_sim.mpileup.vcf.gz
 fi

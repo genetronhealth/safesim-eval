@@ -6,9 +6,9 @@ ctDNA_ref=${rootdir}/genome/hs37d5.fa
 wes_ref=${rootdir}/genome/GCA_000001405.15_GRCh38_full_analysis_set.fna
 
 # global dependencies
-export TMP=/tmp
+export TMP=/sxyf_PR/user/guojingyu/tmp
 export python2=python2
-export python3=python3
+export python3=/bionfsdate/ctDNA/experiment/guojingyu/software/miniconda2/envs/facets/bin/python
 export Rscript=Rscript
 export PATH=${extdir}/bin:$PATH   # samtools, bcftools, bwa, wgsim
 
@@ -22,10 +22,11 @@ export REF=${ctDNA_ref}
 # run consensus dependencies
 export java=java
 export fgbio=${extdir}/fgbio-1.5.0.jar
+elif [[ $data == "reference" ]];then
+export java=java
+echo "Prepare reference genome"
 else
 echo "Please check input datatype!"
-exit 0
-
 fi
 
 # safemut dependencies

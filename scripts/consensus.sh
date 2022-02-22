@@ -35,5 +35,5 @@ samtools fastq ${outdir}/${sample}.umi.unalign.bam |bwa mem -t 8 -p ${REF} - |sa
 ${java} -Xmx8G -jar $picard MergeBamAlignment -R ${REF} -ALIGNED ${outdir}/${sample}.umi.align.bam -UNMAPPED ${outdir}/${sample}.umi.unalign.bam -O ${outdir}/${sample}.merge.align.bam --MAX_GAPS -1 --ATTRIBUTES_TO_RETAIN XS,XA --ALIGNER_PROPER_PAIR_FLAGS true --TMP_DIR $TMP
 ${java} -Xmx8G -jar $fgbio --tmp-dir=$TMP GroupReadsByUmi -s Paired -i ${outdir}/${sample}.merge.align.bam -o ${outdir}/${sample}.group.bam -t RX
 ${java} -Xmx8G -jar $fgbio --tmp-dir=$TMP CallDuplexConsensusReads -i ${outdir}/${sample}.group.bam -o ${outdir}/${sample}.consensus.bam
-samtools fastq ${outdir}/${sample}.consensus.bam |bwa mem -t 8 -p ${REF} -R "@RG\tID:${sample}\tSM:${sample}\tLB:${sample}\tPU:${sample}.L1\tPL:ILLUMINA" - |samtools sort -@ 4 -o ${outdir}/${sample}.consensus.align.bam
+samtools fastq ${outdir}/${sample}.consensus.bam |bwa mem -t 8 -p ${REF} - |samtools sort -@ 4 -o ${outdir}/${sample}.consensus.align.bam
 samtools index ${outdir}/${sample}.consensus.align.bam

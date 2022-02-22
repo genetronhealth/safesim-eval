@@ -49,13 +49,13 @@ mkdir -p ${outdir}
 
 # run safemut
 safemut -b ${nbam} -v ${vcf} -1 ${outdir}/${sample}_sim_1.fq.gz -2 ${outdir}/${sample}_sim_2.fq.gz
-gzip -df ${outdir}/${sample}_sim_1.fq.gz
-gzip -df ${outdir}/${sample}_sim_2.fq.gz
+gzip -d ${outdir}/${sample}_sim_1.fq.gz
+gzip -d ${outdir}/${sample}_sim_2.fq.gz
 fastq-sort -n -S 10G --temporary-directory=$TMP ${outdir}/${sample}_sim_1.fq > ${outdir}/${sample}_sim_1.sort.fq
 fastq-sort -n -S 10G --temporary-directory=$TMP ${outdir}/${sample}_sim_2.fq > ${outdir}/${sample}_sim_2.sort.fq
 gzip -f ${outdir}/${sample}_sim_1.sort.fq
 gzip -f ${outdir}/${sample}_sim_2.sort.fq
-rm -f ${outdir}/*.fq
+rm -f *.fq
 
 if [[ -z "${lumi}" ]];then
 # mapping & mpileup
