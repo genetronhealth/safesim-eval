@@ -22,10 +22,11 @@ export REF=${ctDNA_ref}
 # run consensus dependencies
 export java=java
 export fgbio=${extdir}/fgbio-1.5.0.jar
+elif [[ $data == "reference" ]];then
+export java=java
+echo "Prepare reference genome"
 else
 echo "Please check input datatype!"
-exit 0
-
 fi
 
 # safemut dependencies
