@@ -53,13 +53,11 @@ Data will be dowoloaded in ./RawData default.
 ```
 ./
 |--WES
-|  |--SRRXXXXX
-|  |  |--SRRXXXXX_1.fastq.gz
-|  |  |--SRRXXXXX_2.fastq.gz
+|  |--SRRXXXXX_1.fastq.gz
+|  |--SRRXXXXX_2.fastq.gz
 |--ctDNA
-|  |--SRRXXXXX
-|  |  |--SRRXXXXX_1.fastq.gz
-|  |  |--SRRXXXXX_2.fastq.gz
+|  |--SRRXXXXX_1.fastq.gz
+|  |--SRRXXXXX_2.fastq.gz
 ```
 ------------------------
 # Run Evaluation Scripts
@@ -88,7 +86,7 @@ ls ./Results/WES/scriptlog/SRR*_bwa.sh |awk '{print "bash " $1 " >" $1 ".logo 2>
 ls ./Results/WES/scriptlog/SRR*.*.sh |awk '{print "bash " $1 " >" $1 ".logo 2>" $1 ".loge"}' |parallel -j $job_number
 
 # Step4: summary and plot
-bash ./Results/WES/scriptlog/run_plot.sh
+bash ./Results/WES/scriptlog/Summary_plot.sh
 ```
 
 2. Evaluation on ctDNA dataset
@@ -120,7 +118,7 @@ ls ./Results/ctDNA/scriptlog/SRR*_bwa.sh |awk '{print "bash " $1 " >" $1 ".logo 
 ls ./Results/ctDNA/scriptlog/SRR*_sim-rmdup.sh |awk '{print "bash " $1 " >" $1 ".logo 2>" $1 ".loge"}' |parallel -j $job_number
 
 # Step6: summary and plot
-bash ./Results/ctDNA/scriptlog/run_plot.sh
+bash ./Results/ctDNA/scriptlog/Summary_plot.sh
 ```
 
 3. Output directory contents
