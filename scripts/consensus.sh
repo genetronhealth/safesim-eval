@@ -27,7 +27,7 @@ while getopts :i:j:l:s:o: opt; do
     esac
 done
 
-test -d ${outdir} && rm -rf ${outdir}
+test -d ${outdir} && echo "exist consensus results must be removed!"
 mkdir -p ${outdir}
 ${java} -Xmx8G -jar $picard FastqToSam --FASTQ ${fq1} --FASTQ2 ${fq2} --OUTPUT ${outdir}/${sample}.unalign.bam --READ_GROUP_NAME ${sample} --SAMPLE_NAME ${sample} --LIBRARY_NAME ${sample} --PLATFORM_UNIT ${sample}.L1 --PLATFORM ILLUMINA --TMP_DIR $TMP
 ${java} -Xmx8G -jar $fgbio --tmp-dir=$TMP ExtractUmisFromBam -i ${outdir}/${sample}.unalign.bam -o ${outdir}/${sample}.umi.unalign.bam -r ${lumi}M+T ${lumi}M+T -t ZA ZB -s RX
