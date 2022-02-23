@@ -6,7 +6,9 @@
 python2=python2
 python3=python3
 
+wd=`pwd -P`
 extdir=$(dirname "$0")/ext
+test -d ${exdir} && rm -rf ${extdir}
 mkdir -p "${extdir}/bin" && cd "${extdir}"
 
 ### install samtools-1.11
@@ -77,3 +79,5 @@ cd ..
 
 ### install fgbio
 wget https://github.com/fulcrumgenomics/fgbio/releases/download/1.5.0/fgbio-1.5.0.jar
+
+cd ${wd}
