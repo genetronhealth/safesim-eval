@@ -73,8 +73,13 @@ Please run `bash ./eval_wes_main.sh` to generate scripts.
 Default input directory is ./Rawdata/WES, and default output directory is Results/WES.
 Using customized path by set options `-i` and `-o`. Please note the input directory must have the same structure as example above.
 
-Run script steps: 
-you can use `parallel` to process data in multithreads and you can just process one sample in step 1,2,3.
+Run scripts:
+Run all samples evaluation and plot: please run `ls ./Results/WES/scriptlog/*.sh |awk '{print "bash " $1}' |sh > ./Results/WES/scriptlog/runall.logo 2>runall.loge`.
+ 
+For one sample(tumor-normal pair): please run `bash ./Results/WES/scriptlog/tumor.sh ; ls ./Results/WES/scriptlog/normal*.sh |awk '{print "bash " $1}' |sh >./Results/WES/scriptlog/tumor-normal.logo 2> ./Results/WES/scriptlog/tumor-normal.loge`. tumor is SRA accession number of tumor sample and normal is SRA accession number of matched normal sample. (this is only for code testing.)
+
+
+Optionally, you can also use `parallel` to process data in multithreads and you can just process one sample each time in step 1,2,3.
 ```
 # Step1: process tumor
 ls ./Results/WES/scriptlog/SRR*[0-9].sh |awk '{print "bash " $1 " >" $1 ".logo 2>" $1 ".loge"}' |parallel -j $job_number
@@ -99,8 +104,12 @@ Please run `bash ./eval_ct_main.sh` to generate scripts.
 Default input directory is ./Rawdata/ctDNA, and default output directory is Results/ctDNA.
 Using customized path by set options `-i` and `-o`. Please note the input directory must have the same structure as example above.
 
-Run script steps:  
-you can use `parallel` to process data in multithreads and you can just process one sample in step 1,2,3.
+Run scripts: 
+Run all samples evaluation and plot: please run `ls ./Results/ctDNA/scriptlog/*.sh |awk '{print "bash " $1}' |sh > ./Results/ctDNA/scriptlog/runall.logo 2>./Results/ctDNA/scriptlog/runall.loge`.
+
+For one sample(tumor-normal pair): please run `bash ./Results/ctDNA/scriptlog/tumor.sh ; ls ./Results/ctDNA/scriptlog/normal*.sh |awk '{print "bash " $1}' |sh > ./Result/ctDNA/scriptlog/tumor-normal.logo 2> ./Result/ctDNA/scriptlog/tumor-normal.loge`. tumor is SRA accession number of tumor sample and normal is SRA accession number of matched normal sample.(this is only for code testing)
+ 
+Optionaly, you can also use `parallel` to process data in multithreads and you can just process one sample each time in step 1,2,3.
 ```
 # Step1: process tumor
 ls ./Results/ctDNA/scriptlog/SRR*[0-9].sh |awk '{print "bash " $1 " >" $1 ".logo 2>" $1 ".loge"}' |parallel -j $job_number
@@ -157,5 +166,5 @@ Bamsurgeon: sample_simsnv.sort.bam sample_simindel.sort.bam sample_sim.mpileup.v
 3.3 evaluation plot
 
 The plot directory includes two classes of plots. 
-XXX.mut.pdf shows mutation Allele Fraction Or/And Depth of mutations both realdata and simulation data.
-XXX.stats.pdf shows comparison of statistic paramaters (Z-score, Mean, Variance) betweeen realdata and simulation data.
+Class 1: XXX.mut.pdf shows mutation Allele Fraction Or/And Depth of mutations both realdata and simulation data.
+Class 2: XXX.qqplot.pdf, XXX.mean.pdf, XXX.var.plot shows comparison of statistic paramaters (Z-score, Mean, Variance) between realdata and simulation data.

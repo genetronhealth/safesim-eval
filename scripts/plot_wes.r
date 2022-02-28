@@ -139,6 +139,7 @@ p1 <- ggplot(data = df_qqplot, mapping = aes(x = x, y = y)) +
       labs(x = "RealData Allele Fraction Z-Score" , y = "Simulation Allele Fraction Z-Score", title = paste(eval_tool, 'QQplot (WES)')) + 
       theme(text = element_text(size = 18), axis.text = element_text(size = 18, color = "black"), plot.title = element_text(hjust = 0.5)) + 
       geom_text(data = anno_text, mapping = aes(x = -0.6, y = 2, label = label), parse = T, size = 5)
+ggsave(paste(prefix, '_WES.qqplot.pdf', sep = ''), p1, width = 12, height = 10)
 p2 <- ggplot(data = df_var, mapping = aes(x = x, y = y, color = AF_level)) + 
       geom_point(size=3, alpha = 0.6) + 
       geom_abline(aes(slope = 1, intercept = 0), color = 'black', linetype = 1) + 
@@ -147,6 +148,7 @@ p2 <- ggplot(data = df_var, mapping = aes(x = x, y = y, color = AF_level)) +
            title = paste(eval_tool, "Variance (WES)")) + 
       theme(text = element_text(size = 18), axis.text = element_text(size = 18, color = "black"), plot.title = element_text(hjust = 0.5)) + 
       annotate(geom = "text", x= -3.6, y= -1.5, label = paste("italic(y)==~italic(x)~','~italic(MSE)==", var_mse), size = 7, parse = T)
+ggsave(paste(prefix, '_WES.var.pdf', sep = ''), p2, width = 12, height = 10)
 p3 <- ggplot(data = df_mean, mapping = aes(x = x, y = y, color = AF_level)) + 
       geom_point(size=3, alpha = 0.6) + 
       geom_abline(aes(slope = 1, intercept = 0), color = 'black', linetype = 1) + 
@@ -155,7 +157,7 @@ p3 <- ggplot(data = df_mean, mapping = aes(x = x, y = y, color = AF_level)) +
            title = paste(eval_tool, "Mean (WES)")) + 
       theme(text = element_text(size = 18), axis.text = element_text(size = 18, color = "black"), plot.title = element_text(hjust = 0.5)) + 
       annotate(geom = "text", x = -1.2, y = -0.3, label = paste("italic(y)==~italic(x)~','~italic(MSE)==", mean_mse), size = 7, parse = T)
-
-p <- marrangeGrob(list(p1, p3, p2), nrow = 1, ncol = 1, top = NULL)
-ggsave(paste(eval_tool, '_WES.stats.pdf', sep = ''), p, width = 12, height = 10)
+ggsave(paste(prefix, '_WES.mean.pdf', sep = ''), p3, width = 12, height = 10)
+#p <- marrangeGrob(list(p1, p3, p2), nrow = 1, ncol = 1, top = NULL)
+#ggsave(paste(eval_tool, '_WES.stats.pdf', sep = ''), p, width = 12, height = 10)
 

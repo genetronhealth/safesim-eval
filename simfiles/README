@@ -1,0 +1,34 @@
+This directory contains bed files and variant-related files of multiple formats for simulation.
+
+This README shows how to generate the files in the simfiles directory.
+
+1. Prepare ctDNA variant files
+
+The original gold standard VCF file is downloaded from https://figshare.com/articles/dataset/Consensus_Target_Region/13511829 (KnownPositives_hg19.vcf.gz).
+The original bed files of companies IDT and ILM are downloaded from https://figshare.com/projects/SEQC2_Onco-panel_Sequencing_Working_Group_-_Liquid_Biopsy_Study/94523
+
+The variants to be simulated are known positive variants from KnownPositives_hg19.vcf.gz which are in the bed region of each company.
+The gold standard VCF contains variant information of tumor cfDNA Sample A which matches the normal Sample B,
+the allele fraction (AF) to be simulated in Sample B is 20% of the AF in the gold standard Sample A, 
+because 20% of the AF in Sample A is identical to the AF in the physical-mixture Sample D. (more information about Samples A/B/D is described in the paper at https://doi.org/10.1186/s13059-021-02316-z)
+
+Then, different formats of variant files are generated using bedtools/bcftools to meet the requirements of different variant simulators.
+
+And the regions in bed files are narrawed down to select only variant positions to speed up the process of evaluation.
+
+The customized gold standard txt file contains 5 columns (seperated by '\t') representing mutation, AF, gene, CNT from COSMIC database and allele-fraction level, respectively.
+CNT and gene annotation are derived from COSMIC(v94) database.
+
+
+2.Prepare WES variant files
+
+The original gold standard VCF file is downloaded from https://ftp-trace.ncbi.nlm.nih.gov/ReferenceSamples/seqc/Somatic_Mutation_WG/release/latest/
+
+To make the results meaningful, each variant is simulated only if its allele depth >= 1 and its AF <= 0.9.
+Then, different formats of variant files are generated using bedtools/bcftools to meet the requirements of different variant simulators.
+
+And the regions in bed file are narrawed down to select only variant position to speed up the process of evaluation.
+
+The customized gold standard txt file contains 5 columns (seperated by '\t') representing mutation, AF, gene, CNT from COSMIC database and allele-fraction level, respectively.
+CNT and gene annotation are derived from COSMIC(v94) database.
+
