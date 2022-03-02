@@ -75,7 +75,7 @@ start_list <- seq(1,nrow(gs_df),25) # n mutations each plot
 
 pl <- lapply(1:length(start_list),myplot)
 ml <- marrangeGrob(pl, nrow = 1, ncol = 1, top = NULL)
-ggsave(paste(prefix, '.mut', '.pdf', sep=''), ml, width = 32, height = 15)
+ggsave(paste(prefix, '_ctDNA.mut', '.pdf', sep=''), ml, width = 32, height = 15)
 
 # plot mse
 
@@ -179,7 +179,7 @@ AF_level <- rep(c('Low', 'Medium', 'High'), 2)
 dl <- data.frame(int, slope, Company, AF_level)
 p1 <- ggplot() +
       geom_point(data = df, aes(x = x, y = y), size = 3, alpha = 0.2, shape = 4) +
-      facet_grid(Company~factor(AF_level, levels = c('Low', 'Medium', 'High'))) +
+      facet_grid(factor(AF_level, levels = c('Low', 'Medium', 'High'))~Company) +
       labs(x = "Lbx_high Allele Fraction Z-Score",
            y = "Simulation Allele Fraction Z-Score",
            title = paste(eval_tool, ' QQplot', sep = '')) +
@@ -188,6 +188,7 @@ p1 <- ggplot() +
             plot.title = element_text(hjust = 0.5)) +
       geom_text(data = qq_anno_text, aes(x = -0.6, y = 2, label = label), parse = T, size = 5) +
       geom_abline(data = dl, aes(slope = slope, intercept = int), color = 'red', linetype = 1)
+ggsave(paste(prefix, '_ctDNA.qqplot.pdf', sep = ''), p1, width = 8, height = 12)
 
 # Variance scatter plot
 p2 <- ggplot(data = df_var, aes(x = x, y = y, color = AF_level)) +
@@ -201,6 +202,7 @@ p2 <- ggplot(data = df_var, aes(x = x, y = y, color = AF_level)) +
       theme(text = element_text(size = 16),
             axis.text = element_text(size = 16, color = "black"),
             plot.title = element_text(hjust = 0.5))
+ggsave(paste(prefix, '_ctDNA.var.pdf', sep = ''), p2, width = 12, height = 8)
 
 # Mean scatter plot
 p3 <- ggplot(data = df_mean, aes(x = x, y = y, color = AF_level)) +
@@ -214,7 +216,7 @@ p3 <- ggplot(data = df_mean, aes(x = x, y = y, color = AF_level)) +
       theme(text = element_text(size = 16),
             axis.text = element_text(size = 16, color = "black"),
             plot.title = element_text(hjust = 0.5))
-
-p <- marrangeGrob(list(p1, p3, p2), nrow = 1, ncol = 1, top = NULL)
-ggsave(paste(prefix, '.stats.pdf', sep = ''), p, width = 12, height = 8)
+ggsave(paste(prefix, '_ctDNA.mean.pdf', sep = ''), p3, width = 12, height = 8)
+#p <- marrangeGrob(list(p1, p3, p2), nrow = 1, ncol = 1, top = NULL)
+#ggsave(paste(prefix, '.stats.pdf', sep = ''), p, width = 12, height = 8)
 
