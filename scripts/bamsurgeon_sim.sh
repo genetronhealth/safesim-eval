@@ -55,8 +55,8 @@ mkdir -p ${outdir}
 # run bamsurgeon
 cd $outdir
 
-${python3} ${addsnv} -v ${snv} -f ${nbam} -r ${REF} -o ${sample}.simsnv.bam -p 8 --aligner mem --picardjar ${picard} --mindepth 10 --maxdepth 1000000 --coverdiff 0.5 --tmpdir addsnv.tmp
-${python3} ${addindel} -v ${indel} -f ${nbam} -r ${REF} -o ${sample}.simindel.bam -p 8 --aligner mem --picardjar ${picard} --mindepth 10 --maxdepth 1000000 --tmpdir addindel.tmp
+${python3} ${addsnv} -v ${snv} -f ${nbam} -r ${REF} -o ${sample}.simsnv.bam -p 8 --aligner mem --picardjar ${picard} --mindepth 10 --maxdepth 1000000 --coverdiff 0.5 --tmpdir addsnv.tmp --seed 0
+${python3} ${addindel} -v ${indel} -f ${nbam} -r ${REF} -o ${sample}.simindel.bam -p 8 --aligner mem --picardjar ${picard} --mindepth 10 --maxdepth 1000000 --tmpdir addindel.tmp --seed 0
 samtools sort -@ 8 -o ${sample}.simsnv.sort.bam ${sample}.simsnv.bam
 samtools sort -@ 8 -o ${sample}.simindel.sort.bam ${sample}.simindel.bam
 samtools index -@ 8 ${sample}.simsnv.sort.bam && rm -f ${sample}.simsnv.bam
