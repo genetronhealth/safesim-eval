@@ -42,10 +42,18 @@ with open(gs, 'r') as f:
         if not list(vcffile.fetch(region = chr + ':' + pos + '-' + pos)):
             print_info(dataclass, mut, af, dp)
             continue
+        is_info_printed = False
+        maxDP = 0
         for rec in vcffile.fetch(region = chr + ':' + pos + '-' + pos):
+            if 'DP' in rec.samples[0]: maxDP = max([maxDP, rec.samples[0]['DP']])
             if rec.alts[0] == alt:
                 ad = rec.samples[0]['AD'][1]
                 dp = rec.samples[0]['DP']
                 af = float(ad)/dp
                 print_info(dataclass, mut, af, dp)
+                is_info_printed = True
                 break
+        if not is_info_printed: 
+            print_info(dataclass, mut, af, dp)
+            #print_info(dataclass, mut, 0, maxDP)
+     
