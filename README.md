@@ -49,7 +49,7 @@ If reference genomes were already prepared, please configure `ctDNA_ref` and `we
 SRA Accession numbers of WES samples are listed in ./tn_sample.list.
 Data will be dowoloaded in ./RawData default.
 
-./RawData structure:
+./RawData structure (the fastq.gz files should be pre-downloaded using your favorite tool such as ascp, wget, or curl):
 ```
 ./
 |--WES
@@ -71,12 +71,12 @@ Evaluation on WES dataset using safemut, VarBen and Bamsurgeon.
 
 Please run `bash ./eval_wes_main.sh` to generate scripts.
 Default input directory is ./Rawdata/WES, and default output directory is Results/WES.
-Using customized path by set options `-i` and `-o`. Please note the input directory must have the same structure as example above.
+You can use customized path by set options `-i` and `-o`. Please note the input directory must have the same structure as the above example.
 
 Run scripts:
-Run all samples evaluation and plot: please run `ls ./Results/WES/scriptlog/*.sh |awk '{print "bash " $1}' |sh > ./Results/WES/scriptlog/runall.logo 2>runall.loge`.
+Run the evaluation and plot of all samples: please run `ls ./Results/WES/scriptlog/*.sh |awk '{print "bash " $1}' |sh > ./Results/WES/scriptlog/runall.logo 2>runall.loge`.
  
-For one sample(tumor-normal pair): please run `bash ./Results/WES/scriptlog/tumor.sh ; ls ./Results/WES/scriptlog/normal*.sh |awk '{print "bash " $1}' |sh >./Results/WES/scriptlog/tumor-normal.logo 2> ./Results/WES/scriptlog/tumor-normal.loge`. tumor is SRA accession number of tumor sample and normal is SRA accession number of matched normal sample. (this is only for code testing.)
+For one sample (tumor-normal pair): please run `bash ./Results/WES/scriptlog/tumor.sh ; ls ./Results/WES/scriptlog/normal*.sh |awk '{print "bash " $1}' |sh >./Results/WES/scriptlog/tumor-normal.logo 2> ./Results/WES/scriptlog/tumor-normal.loge`. tumor is SRA accession number of tumor sample and normal is SRA accession number of matched normal sample. (this is only for code testing.)
 
 
 Optionally, you can also use `parallel` to process data in multithreads and you can just process one sample each time in step 1,2,3.
@@ -107,7 +107,7 @@ Using customized path by set options `-i` and `-o`. Please note the input direct
 Run scripts: 
 Run all samples evaluation and plot: please run `ls ./Results/ctDNA/scriptlog/*.sh |awk '{print "bash " $1}' |sh > ./Results/ctDNA/scriptlog/runall.logo 2>./Results/ctDNA/scriptlog/runall.loge`.
 
-For one sample(tumor-normal pair): please run `bash ./Results/ctDNA/scriptlog/tumor.sh ; ls ./Results/ctDNA/scriptlog/normal*.sh |awk '{print "bash " $1}' |sh > ./Result/ctDNA/scriptlog/tumor-normal.logo 2> ./Result/ctDNA/scriptlog/tumor-normal.loge`. tumor is SRA accession number of tumor sample and normal is SRA accession number of matched normal sample.(this is only for code testing)
+For one sample (tumor-normal pair): please run `bash ./Results/ctDNA/scriptlog/tumor.sh ; ls ./Results/ctDNA/scriptlog/normal*.sh |awk '{print "bash " $1}' |sh > ./Result/ctDNA/scriptlog/tumor-normal.logo 2> ./Result/ctDNA/scriptlog/tumor-normal.loge`. tumor is SRA accession number of tumor sample and normal is SRA accession number of matched normal sample (this is only for code testing).
  
 Optionaly, you can also use `parallel` to process data in multithreads and you can just process one sample each time in step 1,2,3.
 ```
