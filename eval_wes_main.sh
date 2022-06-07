@@ -48,15 +48,15 @@ samtools index -@ 4 ${outdir}/nbam/${n}.bam" > "${outdir}/scriptlog/${n}_bwa.sh"
 
 echo "source ${init} WES
 bash ${scriptdir}/safemut_sim.sh -n ${outdir}/nbam/${n}.bam -v ${simfiles}/wes_simmut_safemut.vcf.gz -r ${simfiles}/wes_simmut.bed -s ${n} -o ${outdir}/safemut/${n}
-\${python2} ${scriptdir}/extract_info.py ${outdir}/safemut/${n}/${n}_sim.mpileup.vcf.gz ${c} |awk '{print \$0\"\\tSEQC2\"}' > ${outdir}/safemut/${n}/${n}_simmut.info.txt" > "${outdir}/scriptlog/${n}.safemut.sh"
+\${python2} ${scriptdir}/extract_info.py ${outdir}/safemut/${n}/${n}_sim.mpileup.vcf.gz ${c} |awk '{print \$0\"\\tSimulation\"}' > ${outdir}/safemut/${n}/${n}_simmut.info.txt" > "${outdir}/scriptlog/${n}.safemut.sh"
 
 echo "source ${init} WES
 bash ${scriptdir}/varben_sim.sh -n ${outdir}/nbam/${n}.bam -v ${simfiles}/wes_simmut_varben.tsv -r ${simfiles}/wes_simmut.bed -s ${n} -o ${outdir}/varben/${n}
-\${python2} ${scriptdir}/extract_info.py ${outdir}/varben/${n}/${n}_sim.mpileup.vcf.gz ${c} |awk '{print \$0\"\\tSEQC2\"}' > ${outdir}/varben/${n}/${n}_simmut.info.txt" > "${outdir}/scriptlog/${n}.varben.sh"
+\${python2} ${scriptdir}/extract_info.py ${outdir}/varben/${n}/${n}_sim.mpileup.vcf.gz ${c} |awk '{print \$0\"\\tSimulation\"}' > ${outdir}/varben/${n}/${n}_simmut.info.txt" > "${outdir}/scriptlog/${n}.varben.sh"
 
 echo "source ${init} WES
 bash ${scriptdir}/bamsurgeon_sim.sh -n ${outdir}/nbam/${n}.bam -s ${simfiles}/wes_simmut_bamsurgeon_snv.tsv -i ${simfiles}/wes_simmut_bamsurgeon_indel.tsv -r ${simfiles}/wes_simmut.bed -S ${n} -o ${outdir}/bamsurgeon/${n}
-\${python2} ${scriptdir}/extract_info.py ${outdir}/bamsurgeon/${n}/${n}_sim.mpileup.vcf.gz ${c} |awk '{print \$0\"\\tSEQC2\"}' > ${outdir}/bamsurgeon/${n}/${n}_simmut.info.txt" >"${outdir}/scriptlog/${n}.bamsurgeon.sh"
+\${python2} ${scriptdir}/extract_info.py ${outdir}/bamsurgeon/${n}/${n}_sim.mpileup.vcf.gz ${c} |awk '{print \$0\"\\tSimulation\"}' > ${outdir}/bamsurgeon/${n}/${n}_simmut.info.txt" >"${outdir}/scriptlog/${n}.bamsurgeon.sh"
 
 done
 
