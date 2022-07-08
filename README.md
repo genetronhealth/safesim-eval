@@ -4,7 +4,7 @@ safemut evaluation instruction
 Java8, Python 2.7.15+, Python 3.8.10+ are presumed be installed, you may use conda to do python version management.
 To install from scratch, please set python path at start of ./install-dependencies.sh and run: `./install-dependencies.sh`.
 Bamsurgeon may be failed during exonerate installation. you may install exonerate using conda: `conda install -c bioconda exonerate`
-R 4.0+ is required for plotting. R packages `ggplot2` and `gridExtra` need to be installed. These packages can be installed from CRAN simply.
+R 4.0+ is required for plotting. The R packages `ggplot2`, `gridExtra` and `this.path` need to be installed. These packages can be installed from CRAN.
 
 1. samtools, bcftools, bwa.
 
@@ -124,7 +124,7 @@ ls ./Results/ctDNA/scriptlog/SRR*_rmdup-sim.*.sh |awk '{print "bash " $1 " >" $1
 ls ./Results/ctDNA/scriptlog/SRR*_bwa.sh |awk '{print "bash " $1 " >" $1 ".logo 2>" $1 ".loge"}' |parallel -j $job_number
 
 # Step5: simulation on original normal bam
-ls ./Results/ctDNA/scriptlog/SRR*_sim-rmdup.sh |awk '{print "bash " $1 " >" $1 ".logo 2>" $1 ".loge"}' |parallel -j $job_number
+ls ./Results/ctDNA/scriptlog/SRR*_sim-rmdup.*.sh |awk '{print "bash " $1 " >" $1 ".logo 2>" $1 ".loge"}' |parallel -j $job_number
 
 # Step6: summary and plot
 bash ./Results/ctDNA/scriptlog/Summary_plot.sh
