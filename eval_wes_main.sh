@@ -69,5 +69,5 @@ paste ${outdir}/realdata/*_simmut.info.txt |cut -f 1,2,6,10,14,18,22,26 > ${outd
 for tool in safemut varben bamsurgeon
 do
 paste ${outdir}/\${tool}/SRR*/*_simmut.info.txt |cut -f 1,2,6,10,14,18,22,26 > ${outdir}/\${tool}/simulation.txt
-\${Rscript} ${scriptdir}/plot_wes.r ${simfiles}/wes_simmut_gs.txt ${outdir}/realdata ${outdir}/\${tool} ${outdir}/plot/\${tool}
+\${Rscript} ${scriptdir}/plot_wes.r ${simfiles}/wes_simmut_gs.txt ${outdir}/realdata ${outdir}/\${tool} ${outdir}/plot/ \${tool}
 done" > "${outdir}/scriptlog/Summary_plot.sh"
