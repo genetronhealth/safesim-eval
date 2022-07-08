@@ -69,8 +69,12 @@ bash ${scriptdir}/bamsurgeon_sim.sh -n ${outdir}/rmdup-sim/consensus/${n}.consen
 # sim-rmdup
 mkdir -p "${outdir}/sim-rmdup/nbam"
 
+nfqu1="${inputdir}/${n}_1.umi.fastq.gz"
+nfqu2="${inputdir}/${n}_2.umi.fastq.gz"
+
 echo "source ${init} ctDNA
-bwa mem -t 8 -R \"@RG\\tID:${n}\\tSM:${n}\\tLB:${n}\\tPU:${n}.L1\\tPL:ILLUMINA\" \${REF} ${nfq1} ${nfq2} |samtools sort -@ 4 -o ${outdir}/sim-rmdup/nbam/${n}.bam
+\$debarcode -i ${nfq1} -j ${nfq2} -o ${nfqu1} -p ${nfqu2} -b 0 -e ${lumi} -c 0 -f ${lumi} -D 
+bwa mem -t 8 -R \"@RG\\tID:${n}\\tSM:${n}\\tLB:${n}\\tPU:${n}.L1\\tPL:ILLUMINA\" \${REF} ${nfqu1} ${nfqu2} |samtools sort -@ 4 -o ${outdir}/sim-rmdup/nbam/${n}.bam
 samtools index -@ 4 ${outdir}/sim-rmdup/nbam/${n}.bam " > "${outdir}/scriptlog/${n}_bwa.sh"
 
 echo "source ${init} ctDNA
@@ -93,12 +97,12 @@ paste ${outdir}/realdata/*_simmut.info.txt |cut -f 1,2,6,10,14,18,22,26,30,34,38
 for tool in safemut varben bamsurgeon
 do
 paste ${outdir}/rmdup-sim/\${tool}/SRR*/*_simmut.info.txt |cut -f 1,2,6,10,14,18,22,26,30,34,38,42,46,50,54,58,62,66,70,74,78,82,86,90,94 > ${outdir}/rmdup-sim/\${tool}/simulation.txt
-\${Rscript} ${scriptdir}/plot_ct.r ${simfiles}/ctDNA_simmut_gs.txt ${outdir}/realdata ${outdir}/rmdup-sim/\${tool} ${outdir}/plot/\${tool}_rmdup-sim
+\${Rscript} ${scriptdir}/plot_ct.r ${simfiles}/ctDNA_simmut_gs.txt ${outdir}/realdata ${outdir}/rmdup-sim/\${tool} ${outdir}/plot/rmdup-sim. \${tool} rmdup-sim
 done
 
 for tool in safemut varben
 do
 paste ${outdir}/sim-rmdup/\${tool}/SRR*/*_simmut.info.txt |cut -f 1,2,6,10,14,18,22,26,30,34,38,42,46,50,54,58,62,66,70,74,78,82,86,90,94 > ${outdir}/sim-rmdup/\${tool}/simulation.txt
-\${Rscript} ${scriptdir}/plot_ct.r ${simfiles}/ctDNA_simmut_gs.txt ${outdir}/realdata ${outdir}/sim-rmdup/\${tool} ${outdir}/plot/\${tool}_sim-rmdup
+\${Rscript} ${scriptdir}/plot_ct.r ${simfiles}/ctDNA_simmut_gs.txt ${outdir}/realdata ${outdir}/sim-rmdup/\${tool} ${outdir}/plot/sim-rmdup. \${tool} sim-rmdup
 done" > "${outdir}/scriptlog/Summary_plot.sh"
 
