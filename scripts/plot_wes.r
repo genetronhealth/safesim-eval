@@ -1,13 +1,26 @@
 #!/usr/bin/env Rscript
 
+library(this.path)
 library(ggplot2)
 library(gridExtra)
+
+options(warn=1)
+
 args <- commandArgs(trailingOnly=TRUE)
 f_gs <- args[1]
 real_dir <- args[2]
 eval_dir <- args[3]
 prefix <- args[4]
-eval_tool <- tail(strsplit(prefix, '/')[[1]], 1)
+eval_tool <- args[5] # tail(strsplit(prefix, '/')[[1]], 1)
+
+sourceDir <- this.path::here() # dirname(sys.frame(1)$ofile)
+if (length(args) >= 6 && grepl('generate-Chinese', args[6], fixed = TRUE)) {
+    source(paste(sourceDir, "/semantic2word-Chinese.r", sep=""))
+    prefix <- paste0(prefix, "Chinese.")
+} else {
+    source(paste(sourceDir, "/semantic2word-English.r", sep=""))
+    prefix <- paste0(prefix, "English.")
+}
 
 addline_format <- function(x,...){
   gsub('\\s','\n',x)
@@ -113,9 +126,9 @@ af_level <- c()
 for(s in df_var$mut){af_level <- append(af_level ,subset(gs_df, V1 == s)[1,5])}
 df_var$AF_level <- af_level
 
-df_qqplot$AF_level <- factor(df_qqplot$AF_level, levels = c('Low','Medium', 'High'))
-df_mean$AF_level <- factor(df_mean$AF_level, levels = c('Low','Medium', 'High'))
-df_var$AF_level <- factor(df_var$AF_level, levels = c('Low','Medium', 'High'))
+df_qqplot$AF_level <- factor(df_qqplot$AF_level, levels = c('Low','Medium', 'High'), labels = c(GVAR_Low, GVAR_Medium, GVAR_High))
+df_mean$AF_level <- factor(df_mean$AF_level, levels = c('Low','Medium', 'High'), labels = c(GVAR_Low, GVAR_Medium, GVAR_High))
+df_var$AF_level <- factor(df_var$AF_level, levels = c('Low','Medium', 'High'), labels = c(GVAR_Low, GVAR_Medium, GVAR_High))
 df_mean$x <- log(df_mean$x, 10)
 df_mean$y <- log(df_mean$y, 10)
 df_var$x <- log(df_var$x, 10)
@@ -132,32 +145,35 @@ mse <- function(data){
 mean_mse <- mse(df_mean)
 var_mse <- mse(df_var)
 anno_text <- data.frame(AF_level = c('Low', 'Medium', 'High'), label = sprintf("italic(y)==~italic(x)~','~italic(MSE)==%s",c(mse(df_l),mse(df_m),mse(df_h))))
-anno_text$AF_level <- factor(anno_text$AF_level, levels = c('Low','Medium', 'High'))
+anno_text$AF_level <- factor(anno_text$AF_level, levels = c('Low','Medium', 'High'), labels = c(GVAR_LowFA, GVAR_MediumFA, GVAR_HighFA))
 p1 <- ggplot(data = df_qqplot, mapping = aes(x = x, y = y)) + 
       facet_grid(.~AF_level) + geom_point(size=3, alpha = 0.2, shape=4) + 
       geom_abline(aes(slope = 1, intercept = 0), color = 'red', linetype = 1) + 
-      labs(x = "RealData Allele Fraction Z-Score" , y = "Simulation Allele Fraction Z-Score", title = paste(eval_tool, 'QQplot (WES)')) + 
+      labs(x = paste(GVAR_Real_Data_Allele_Fraction_Z_score) , y = paste(GVAR_Simulation_Allele_Fraction_Z_score), title = paste(tools::toTitleCase(eval_tool), GVAR_QQplot_WES),
+           col = GVAR_AF_level, shape = GVAR_AF_level) + 
       theme(text = element_text(size = 18), axis.text = element_text(size = 18, color = "black"), plot.title = element_text(hjust = 0.5)) + 
       geom_text(data = anno_text, mapping = aes(x = -0.6, y = 2, label = label), parse = T, size = 5)
-ggsave(paste(prefix, '_WES.qqplot.pdf', sep = ''), p1, width = 12, height = 10)
+ggsave(paste(prefix, 'WES.qqplot.', eval_tool, '.pdf', sep = ''), p1, width = 12, height = 10)
 p2 <- ggplot(data = df_var, mapping = aes(x = x, y = y, color = AF_level)) + 
-      geom_point(size=3, alpha = 0.6) + 
+      geom_point(aes(shape = AF_level), size=3, alpha = 0.6) + 
       geom_abline(aes(slope = 1, intercept = 0), color = 'black', linetype = 1) + 
-      labs(x = expression(paste("RealData ", log[10], "(Allele Fraction Variance)", sep='')) ,
-           y = expression(paste("Simulation ", log[10], "(Allele Fraction Variance)", sep='')),
-           title = paste(eval_tool, "Variance (WES)")) + 
+      labs(x = bquote(.(GVAR_RealData_space) ~~ log[10] ~ .(GVAR_Allele_Fraction_Variance)) ,
+           y = bquote(.(GVAR_Simulation_space) ~~ log[10] ~ .(GVAR_Allele_Fraction_Variance)) ,
+           title = paste(tools::toTitleCase(eval_tool), GVAR_Variance_WES),
+           col = GVAR_AF_level, shape = GVAR_AF_level) + 
       theme(text = element_text(size = 18), axis.text = element_text(size = 18, color = "black"), plot.title = element_text(hjust = 0.5)) + 
-      annotate(geom = "text", x= -3.6, y= -1.5, label = paste("italic(y)==~italic(x)~','~italic(MSE)==", var_mse), size = 7, parse = T)
-ggsave(paste(prefix, '_WES.var.pdf', sep = ''), p2, width = 12, height = 10)
+      annotate(geom = "text", x= -3.6, y= -1.5, label = paste("italic(y)==~italic(x)~','~italic(MSE)==", var_mse), size = 7, parse = T) 
+ggsave(paste(prefix, 'WES.var.', eval_tool, '.pdf', sep = ''), p2, width = 12, height = 10)
 p3 <- ggplot(data = df_mean, mapping = aes(x = x, y = y, color = AF_level)) + 
-      geom_point(size=3, alpha = 0.6) + 
+      geom_point(aes(shape = AF_level), size=3, alpha = 0.6) + 
       geom_abline(aes(slope = 1, intercept = 0), color = 'black', linetype = 1) + 
-      labs(x = expression(paste("RealData ", log[10], "(Allele Fraction Mean)", sep='')) , 
-           y = expression(paste("Simulation ", log[10], "(Allele Fraction Mean)", sep = '')), 
-           title = paste(eval_tool, "Mean (WES)")) + 
+      labs(x = bquote(.(GVAR_RealData_space) ~~ log[10] ~ .(GVAR_Allele_Fraction_Mean)), 
+           y = bquote(.(GVAR_Simulation_space) ~~ log[10] ~ .(GVAR_Allele_Fraction_Mean)), 
+           title = paste(tools::toTitleCase(eval_tool), GVAR_Mean_WES),
+           col = GVAR_AF_level, shape = GVAR_AF_level) + 
       theme(text = element_text(size = 18), axis.text = element_text(size = 18, color = "black"), plot.title = element_text(hjust = 0.5)) + 
       annotate(geom = "text", x = -1.2, y = -0.3, label = paste("italic(y)==~italic(x)~','~italic(MSE)==", mean_mse), size = 7, parse = T)
-ggsave(paste(prefix, '_WES.mean.pdf', sep = ''), p3, width = 12, height = 10)
+ggsave(paste(prefix, 'WES.mean.', eval_tool, '.pdf', sep = ''), p3, width = 12, height = 10)
 #p <- marrangeGrob(list(p1, p3, p2), nrow = 1, ncol = 1, top = NULL)
 #ggsave(paste(eval_tool, '_WES.stats.pdf', sep = ''), p, width = 12, height = 10)
 
