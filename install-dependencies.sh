@@ -84,7 +84,13 @@ wget https://github.com/fulcrumgenomics/fgbio/releases/download/1.5.0/fgbio-1.5.
 wget https://github.com/genetronhealth/uvc/archive/refs/tags/v0.8.0.tar.gz
 tar -xvf v0.8.0.tar.gz && cd uvc-0.8.0/
 ./install-dependencies.sh && make clean && make all -j4 && make deploy
+cd ..
+
+### install bedtools # from https://bedtools.readthedocs.io/en/latest/content/installation.html
+wget https://github.com/arq5x/bedtools2/releases/download/v2.29.1/bedtools-2.29.1.tar.gz
+tar -zxvf bedtools-2.29.1.tar.gz
+cd bedtools2
+make
 
 cd ${wd}
-
 
