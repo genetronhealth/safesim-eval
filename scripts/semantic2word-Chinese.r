@@ -30,7 +30,7 @@ GVAR_LowFA <- "低丰度范围"
 GVAR_MediumFA <- "中丰度范围"
 GVAR_HighFA <- "高丰度范围"
 
-GVAR_Lbx_high_Allele_Fraction_Z_score <- "Lbx_high 真实数据等位基因丰度Z值"
+GVAR_Lbx_high_Allele_Fraction_Z_score <- "Lbx_high 真实数据的等位基因丰度Z值"
 
 GVAR_Real_Data_Allele_Fraction_Z_score <- "真实数据的等位基因丰度Z值"
 GVAR_Simulation_Allele_Fraction_Z_score <- "模拟变异的等位基因丰度Z值"

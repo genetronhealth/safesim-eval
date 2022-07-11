@@ -48,7 +48,7 @@ GVAR_QQplot_WES <- "QQ-plot (WES)"
 GVAR_Variance_WES <- "Variance (WES)"
 GVAR_Mean_WES <- "Variance (WES)"
 
-GVAR_RealData_space <- "Real-Data "
+GVAR_RealData_space <- "Real-data "
 
 GVAR_LBX_HIGH <- "Lbx_high real variant"
 GVAR_mean <- "mean"
