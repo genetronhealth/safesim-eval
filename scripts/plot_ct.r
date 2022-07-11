@@ -217,6 +217,7 @@ p1 <- ggplot() +
             plot.title = element_text(hjust = 0.5)) +
       geom_text(data = qq_anno_text, aes(x = -0.6, y = 2, label = label), parse = T, size = 5) +
       geom_abline(data = dl, aes(slope = slope, intercept = int), color = 'red', linetype = 1)
+      #scale_x_continuous(sec.axis = sec_axis(~ . , name = GVAR_AF_level, breaks = NULL, labels = NULL))
 ggsave(paste(prefix, 'ctDNA.qqplot.', eval_tool, '.pdf', sep = ''), p1, width = 8, height = 12)
 
 # Variance scatter plot
