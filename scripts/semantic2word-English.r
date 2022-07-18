@@ -27,15 +27,15 @@ GVAR_LowFA <- "Low-AF range"
 GVAR_MediumFA <- "Medium-AF range"
 GVAR_HighFA <- "High-AF range"
 
-GVAR_Lbx_high_Allele_Fraction_Z_score <- "Lbx_high real-data allele fraction (AF) Z-Score"
+GVAR_Lbx_high_Allele_Fraction_Z_score <- "Lbx_high real-data allele fraction (AF) z-score"
 
-GVAR_Real_Data_Allele_Fraction_Z_score <- "Real-data allele fraction (AF) Z-Score"
-GVAR_Simulation_Allele_Fraction_Z_score <- "Simulation allele fraction (AF) Z-Score"
+GVAR_Real_Data_Allele_Fraction_Z_score <- "Real-data allele fraction (AF) z-score"
+GVAR_Simulation_Allele_Fraction_Z_score <- "Simulation allele fraction (AF) z-score"
 
 GVAR_space_QQplot <- " QQ-plot"
 GVAR_QQplot_WES <- "QQ-plot (WES)"
 
-GVAR_Allele_Fraction_Variance <- "(Allele fraction variance)"
+GVAR_Allele_Fraction_Variance <- "(allele_fraction_variance)" # with-underscore
 GVAR_space_Variance <- " variance" # not-start
 GVAR_Variance <- "variance"
 GVAR_Allele_Fraction_Mean <- "(allele_fraction_mean)" # with-underscore
