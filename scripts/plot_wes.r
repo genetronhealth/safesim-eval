@@ -126,7 +126,7 @@ af_level <- c()
 for(s in df_var$mut){af_level <- append(af_level ,subset(gs_df, V1 == s)[1,5])}
 df_var$AF_level <- af_level
 
-df_qqplot$AF_level <- factor(df_qqplot$AF_level, levels = c('Low','Medium', 'High'), labels = c(GVAR_Low, GVAR_Medium, GVAR_High))
+df_qqplot$AF_level <- factor(df_qqplot$AF_level, levels = c('Low','Medium', 'High'), labels = c(GVAR_LowFA, GVAR_MediumFA, GVAR_HighFA))
 df_mean$AF_level <- factor(df_mean$AF_level, levels = c('Low','Medium', 'High'), labels = c(GVAR_Low, GVAR_Medium, GVAR_High))
 df_var$AF_level <- factor(df_var$AF_level, levels = c('Low','Medium', 'High'), labels = c(GVAR_Low, GVAR_Medium, GVAR_High))
 df_mean$x <- log(df_mean$x, 10)
@@ -146,6 +146,7 @@ mean_mse <- mse(df_mean)
 var_mse <- mse(df_var)
 anno_text <- data.frame(AF_level = c('Low', 'Medium', 'High'), label = sprintf("italic(y)==~italic(x)~','~italic(MSE)==%s",c(mse(df_l),mse(df_m),mse(df_h))))
 anno_text$AF_level <- factor(anno_text$AF_level, levels = c('Low','Medium', 'High'), labels = c(GVAR_LowFA, GVAR_MediumFA, GVAR_HighFA))
+
 p1 <- ggplot(data = df_qqplot, mapping = aes(x = x, y = y)) + 
       facet_grid(.~AF_level) + geom_point(size=3, alpha = 0.2, shape=4) + 
       geom_abline(aes(slope = 1, intercept = 0), color = 'red', linetype = 1) + 
