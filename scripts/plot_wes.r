@@ -4,8 +4,6 @@ library(this.path)
 library(ggplot2)
 library(gridExtra)
 
-options(warn=1)
-
 args <- commandArgs(trailingOnly=TRUE)
 f_gs <- args[1]
 real_dir <- args[2]
@@ -27,7 +25,7 @@ addline_format <- function(x,...){
 }
 
 gs_df <- read.table(f_gs, header = F, sep = "\t")
-colnames(gs_df) <- c('mut', 'value', 'Anno', 'CNT', 'AF_Class')
+colnames(gs_df) <- c('mut', 'value', 'gene', 'Anno', 'CNT', 'AF_Class', 'VAR_TYPE')
 gs_df$Class <- rep('GS_AF', nrow(gs_df))
 gs_df$variable <- rep('AF', nrow(gs_df))
 
@@ -49,32 +47,36 @@ tmpdf$value <- log(tmpdf$value, 10)
 fmt_df <- rbind(fmt_df, tmpdf)
 fmt_df$variable <- variables
 
-myplot <- function(n){
+for (vartype in c('SNP', 'INDEL')) {
+
+gs1df <- subset(gs_df, VAR_TYPE == vartype)
+
+myplot <- function(n, gs2df){
   start <- start_list[n]
   end   <- start_list[n] + 47
-  if (end > nrow(gs_df)){ end <- nrow(gs_df) }
-  df1 <- subset(fmt_df, fmt_df$mut %in% gs_df$mut[start:end])
-  df1$mut <- factor(df1$mut, levels = gs_df$mut[start:end])
-  cnt <- gs_df[start:end, c(1,4)]
+  if (end > nrow(gs2df)){ end <- nrow(gs2df) }
+  df1 <- subset(fmt_df, fmt_df$mut %in% gs2df$mut[start:end])
+  df1$mut <- factor(df1$mut, levels = gs2df$mut[start:end])
+  cnt <- gs2df[start:end, c(1,4)]
   cnt$variable <- rep('AF', nrow(cnt))
-  info <- gs_df[start:end, c(1,1)]
+  info <- gs2df[start:end, c(1,1)]
   colnames(info) <- c("mut", 'pos')
   info$pos <- sapply(strsplit(info$mut, '-'), function(x){paste(x[1:2],collapse=':')})
   info$variable <- rep('DP', nrow(info))
   p <- ggplot() + 
        geom_point(data = df1, aes(x = mut, y = value, color = Class), 
                   size = 6, alpha = 0.7, position = position_jitterdodge(dodge.width = 0.5)) + 
-       geom_point(data = gs_df[start:end,], aes(x = mut, y = value, color='GS_AF'), shape = 95, size = 6) + 
+       geom_point(data = gs2df[start:end,], aes(x = mut, y = value, color='GS_AF'), shape = 95, size = 6) + 
        facet_grid(factor(variable,levels=c('DP','AF'),labels=c('log10(DP)', 'AF'))~., scales = 'free_y') + 
        scale_color_manual(values = c('black', '#f8766d', '#00ba38')) + 
        labs(title = paste(eval_tool, "Simulation (WES)"), x = "Mutation", y = "Value") + 
-       scale_x_discrete(labels = addline_format(gs_df$Anno[start:end])) + 
+       scale_x_discrete(labels = addline_format(gs2df$Anno[start:end])) + 
        theme(panel.spacing = unit(10, "lines"), text = element_text(size = 16), 
              axis.text = element_text(size = 16, color = "black"), 
              axis.text.x = element_text(angle = 45,vjust = 0.75, hjust = 1), 
              axis.title.x = element_text(vjust=0), axis.ticks.x = element_blank(), 
              plot.title = element_text(hjust = 0.5), panel.grid = element_blank()) + coord_cartesian(clip = "off") + 
-       geom_text(data = cnt, aes(x = mut, label = CNT ,y = -Inf), vjust = 1 ,size = 7) + 
+       geom_text(data = cnt, aes(x = mut, label = "CNT" ,y = -Inf), vjust = 1 ,size = 7) + 
        geom_text(data = data.frame(tag = "CNT",variable = "AF"), aes(x = Inf, label = tag, y = -Inf), vjust = 1.1, size = 7) + 
        geom_text(data = info, aes(x = mut, label = pos ,y = -Inf), vjust = 0.2, hjust = 1.1, size = 6, angle = 90) + 
        geom_text(data = data.frame(tag = "MUT", variable = "DP"), aes(x = Inf, label = tag, y = -Inf), vjust = 1.9, size = 7) + 
@@ -82,12 +84,13 @@ myplot <- function(n){
   return(p)
 }
 
-start_list <- seq(1,nrow(gs_df), 48) # n mutations each plot
+start_list <- seq(1,nrow(gs1df), 48) # n mutations each plot
 
-pl <- lapply(1:length(start_list), myplot)
+pl <- lapply(1:length(start_list), myplot, gs2df = gs1df)
 ml <- marrangeGrob(pl, nrow = 1, ncol = 1, top = NULL)
-ggsave(paste(eval_tool, '_WES.mut.pdf', sep = ''), ml, width = 32, height = 15)
-
+#ggsave(paste(eval_tool, '_WES.mut.pdf', sep = ''), ml, width = 32, height = 15)
+ggsave(paste(prefix, 'WES.mut.', eval_tool, '.', vartype, '.pdf', sep = ''), ml, width = 32, height = 15)
+}
 
 # plot mse
 f_real <- paste(real_dir, 'realdata.txt', sep = '/')
@@ -113,17 +116,17 @@ for (mut in rownames(realdf)){
 
 gs_df <- read.table(f_gs, header=F,sep = "\t")
 af_level <- c()
-for(s in df$mut){af_level <- append(af_level ,subset(gs_df, V1 == s)[1,5])}
+for(s in df$mut){af_level <- append(af_level ,subset(gs_df, V1 == s)[1,6])}
 df$AF_level <- af_level
 df_l <- data.frame(x=sort(df[df$AF_level=="Low",1]),y=sort(df[df$AF_level=="Low",2]),AF_level=df[df$AF_level=="Low",4])
 df_m <- data.frame(x=sort(df[df$AF_level=="Medium",1]),y=sort(df[df$AF_level=="Medium",2]),AF_level=df[df$AF_level=="Medium",4])
 df_h <- data.frame(x=sort(df[df$AF_level=="High",1]),y=sort(df[df$AF_level=="High",2]),AF_level=df[df$AF_level=="High",4])
 df_qqplot <- rbind(df_l,df_m,df_h)
 af_level <- c()
-for(s in df_mean$mut){af_level <- append(af_level ,subset(gs_df, V1 == s)[1,5])}
+for(s in df_mean$mut){af_level <- append(af_level ,subset(gs_df, V1 == s)[1,6])}
 df_mean$AF_level <- af_level
 af_level <- c()
-for(s in df_var$mut){af_level <- append(af_level ,subset(gs_df, V1 == s)[1,5])}
+for(s in df_var$mut){af_level <- append(af_level ,subset(gs_df, V1 == s)[1,6])}
 df_var$AF_level <- af_level
 
 df_qqplot$AF_level <- factor(df_qqplot$AF_level, levels = c('Low','Medium', 'High'), labels = c(GVAR_LowFA, GVAR_MediumFA, GVAR_HighFA))

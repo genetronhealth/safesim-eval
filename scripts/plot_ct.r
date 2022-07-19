@@ -32,7 +32,8 @@ addline_format <- function(x,...){
 }
 
 gs_df <- read.table(f_gs, header = F, sep = "\t")
-colnames(gs_df) <- c('mut', 'AF', 'Anno', 'CNT', 'AF_Class')
+#colnames(gs_df) <- c('mut', 'AF', 'Anno', 'CNT', 'AF_Class')
+colnames(gs_df) <- c('mut', 'AF', 'gene', 'Anno', 'CNT', 'AF_Class', 'VAR_TYPE')
 gs_df$AF <- gs_df$AF/5
 gs_df$Class <- rep('GS_AF', nrow(gs_df))
 gs_df$Batch <- rep('GS', nrow(gs_df))
@@ -51,28 +52,31 @@ for (dir in c(eval_dir, real_dir)){
 
 df$Batch <- factor(df$Batch, levels = c(1:12))
 
+for (vartype in c('SNP', 'INDEL')) {
+gs1df <- subset(gs_df, VAR_TYPE == vartype)
+
 myplot <- function(n){
   start <- start_list[n]
   end   <- start_list[n] + 24
-  if (end > nrow(gs_df)){ end <- nrow(gs_df) }
-  df1 <- subset(df, df$mut %in% gs_df$mut[start:end])
-  df1$mut <- factor(df1$mut, levels = gs_df$mut[start:end])
-  cnt <- gs_df[start:end, c(1,4)]
+  if (end > nrow(gs1df)){ end <- nrow(gs1df) }
+  df1 <- subset(df, df$mut %in% gs1df$mut[start:end])
+  df1$mut <- factor(df1$mut, levels = gs1df$mut[start:end])
+  cnt <- gs1df[start:end, c(1,4)]
   cnt$Company <- rep('ILM', nrow(cnt))
-  info <- gs_df[start:end, c(1,1)]
+  info <- gs1df[start:end, c(1,1)]
   colnames(info) <- c("mut", 'pos')
   info$pos <- sapply(strsplit(info$mut, '-'), function(x){paste(x[1:2],collapse=':')})
   info$Company <- rep('IDT', nrow(info))
   p <- ggplot() +
        geom_point(data = df1, aes(x = mut, y = AF, color = Class, shape = Batch), size = 8, alpha = 0.7,
                   position = position_jitterdodge(dodge.width = 0.5), na.rm = TRUE) +
-       geom_point(data = gs_df[start:end,], aes(x = mut, y = AF, color='GS'), shape = 95, size = 6) +
+       geom_point(data = gs1df[start:end,], aes(x = mut, y = AF, color='GS'), shape = 95, size = 6) +
        facet_grid(Company~., scales = 'free') +
        scale_shape_manual(values = c(65:76)) +
        scale_color_manual(values = c('black', '#f8766d', '#00ba38')) +
        labs(title = paste(eval_tool, GVAR_space_Simulation, sep = ''),
             x = GVAR_Mutation, y = GVAR_Allele_Fraction) +
-       scale_x_discrete(labels = addline_format(gs_df$Anno[start:end])) +
+       scale_x_discrete(labels = addline_format(gs1df$Anno[start:end])) +
        theme(panel.spacing = unit(10, "lines"),
              text = element_text(size = 16),
              axis.text = element_text(size = 16, color = "black"),
@@ -80,7 +84,7 @@ myplot <- function(n){
              axis.title.x = element_text(vjust = 0), axis.ticks.x = element_blank(),
              plot.title = element_text(hjust = 0.5),
              panel.grid = element_blank()) + coord_cartesian(clip = "off") +
-             geom_text(data = cnt, aes(x = mut, label = CNT, y = -Inf), vjust = 1 ,size = 7) +
+             geom_text(data = cnt, aes(x = mut, label = "CNT", y = -Inf), vjust = 1 ,size = 7) +
              geom_text(data = data.frame(tag = "CNT", Company = "ILM"), aes(x = Inf, label = tag, y = -Inf), vjust = 1.1, size = 7) +
              geom_text(data = info, aes(x = mut, label = pos, y = -Inf), vjust = 0.2, hjust = 1.1, size = 7, angle = 90) +
              geom_text(data = data.frame(tag = "MUT", Company = "IDT"), aes(x = Inf, label = tag, y = -Inf), vjust = 1.9, size = 7) +
@@ -88,12 +92,12 @@ myplot <- function(n){
   return(p)
 }
 
-start_list <- seq(1,nrow(gs_df),25) # n mutations each plot
+start_list <- seq(1,nrow(gs1df),25) # n mutations each plot
 
 pl <- lapply(1:length(start_list),myplot)
 ml <- marrangeGrob(pl, nrow = 1, ncol = 1, top = NULL)
-ggsave(paste(prefix, 'ctDNA.mut.', eval_tool, '.pdf', sep=''), ml, width = 32, height = 15)
-
+ggsave(paste(prefix, 'ctDNA.mut.', eval_tool, '.', vartype, '.pdf', sep=''), ml, width = 32, height = 15)
+}
 # plot mse
 
 f_real <- paste(real_dir, 'realdata.txt', sep = '/')
@@ -131,13 +135,13 @@ df_mean <- rbind(df_mean, data.frame(x = mean(x), y =mean(y), Company = zz, mut=
 
 # Add AF_level tag
 af_level <- c()
-for(s in df$mut){af_level <- append(af_level ,subset(gs_df, mut == s)[1,5])}
+for(s in df$mut){af_level <- append(af_level ,subset(gs_df, mut == s)[1,6])}
 df$AF_level <- af_level
 af_level <- c()
-for(s in df_mean$mut){af_level <- append(af_level ,subset(gs_df, mut == s)[1,5])}
+for(s in df_mean$mut){af_level <- append(af_level ,subset(gs_df, mut == s)[1,6])}
 df_mean$AF_level <- af_level
 af_level <- c()
-for(s in df_var$mut){af_level <- append(af_level ,subset(gs_df, mut == s)[1,5])}
+for(s in df_var$mut){af_level <- append(af_level ,subset(gs_df, mut == s)[1,6])}
 df_var$AF_level <- af_level
 
 # Sort Z-score by Company and AF_level

@@ -30,7 +30,7 @@ with open(gs, 'r') as f:
         af, dp = 0, 0
         inbed = False
         mut, gs_af = eachline.strip().split('\t')[0:2]
-        chr, pos, alt = mut.split('-')
+        chr, pos, ref, alt = mut.split('-')
         for seg in bed_list:
             seg_c, seg_s, seg_e = seg.split('\t')
             if chr == seg_c and int(seg_s) < int(pos) <= int(seg_e):
