@@ -28,15 +28,21 @@ gs_df <- read.table(f_gs, header = F, sep = "\t")
 colnames(gs_df) <- c('mut', 'value', 'gene', 'Anno', 'CNT', 'AF_Class', 'VAR_TYPE')
 gs_df$Class <- rep('GS_AF', nrow(gs_df))
 gs_df$variable <- rep('AF', nrow(gs_df))
+gs_df$Batch <- rep('GS', nrow(gs_df))
 
 df <- data.frame()
+batches <- c(c(1:6), c(1:6))
 for (dir in c(eval_dir, real_dir)){
+  index <- 0
   for (f in list.files(dir, recursive = TRUE, pattern = '_simmut.info.txt')){
+    index <- index + 1
     filename <- paste(dir, f, sep = '/')
     tmpdf <- read.table(filename, header = F, sep = '\t', stringsAsFactors = FALSE)
+    tmpdf$Batch <- rep(batches[index], nrow(tmpdf))
     df <- rbind(df, tmpdf)
   }
 }
+df$Batch <- factor(df$Batch, levels = c(1:6))
 
 variables <- rep(c('AF','DP'), c(nrow(df),nrow(df)))
 fmt_df <- df[,c(1,2,4)]
@@ -46,6 +52,7 @@ colnames(tmpdf) <- c('mut', 'value', 'Class')
 tmpdf$value <- log(tmpdf$value, 10)
 fmt_df <- rbind(fmt_df, tmpdf)
 fmt_df$variable <- variables
+fmt_df$Batch <- df$Batch
 
 for (vartype in c('SNP', 'INDEL')) {
 
@@ -64,22 +71,24 @@ myplot <- function(n, gs2df){
   info$pos <- sapply(strsplit(info$mut, '-'), function(x){paste(x[1:2],collapse=':')})
   info$variable <- rep('DP', nrow(info))
   p <- ggplot() + 
-       geom_point(data = df1, aes(x = mut, y = value, color = Class), 
+       geom_point(data = df1, aes(x = mut, y = value, color = Class, shape = Batch), 
                   size = 6, alpha = 0.7, position = position_jitterdodge(dodge.width = 0.5)) + 
        geom_point(data = gs2df[start:end,], aes(x = mut, y = value, color='GS_AF'), shape = 95, size = 6) + 
-       facet_grid(factor(variable,levels=c('DP','AF'),labels=c('log10(DP)', 'AF'))~., scales = 'free_y') + 
-       scale_color_manual(values = c('black', '#f8766d', '#00ba38')) + 
-       labs(title = paste(eval_tool, "Simulation (WES)"), x = "Mutation", y = "Value") + 
+       facet_grid(factor(variable,levels=c('DP','AF'), labels = c(('log10(depth)'), ('Allele fraction (AF)')))~., scales = 'free_y') + 
+       scale_shape_manual(values = c(65:70)) + 
+       scale_color_manual(values = c('black', '#f8766d', '#00ba38'), labels = c('Reference truth', 'Real variant', 'Simulated variant')) + 
+       labs(title = paste(tools::toTitleCase(eval_tool), "simulation (WES)"), x = "Mutation", y = "") + 
        scale_x_discrete(labels = addline_format(gs2df$Anno[start:end])) + 
+       guides(color = guide_legend(title="Allele fraction type")) +
        theme(panel.spacing = unit(10, "lines"), text = element_text(size = 16), 
              axis.text = element_text(size = 16, color = "black"), 
              axis.text.x = element_text(angle = 45,vjust = 0.75, hjust = 1), 
              axis.title.x = element_text(vjust=0), axis.ticks.x = element_blank(), 
              plot.title = element_text(hjust = 0.5), panel.grid = element_blank()) + coord_cartesian(clip = "off") + 
-       geom_text(data = cnt, aes(x = mut, label = "CNT" ,y = -Inf), vjust = 1 ,size = 7) + 
+       geom_text(data = cnt, aes(x = mut, label = gs2df$CNT[start:end] ,y = -Inf), vjust = 1 ,size = 7) + 
        geom_text(data = data.frame(tag = "CNT",variable = "AF"), aes(x = Inf, label = tag, y = -Inf), vjust = 1.1, size = 7) + 
        geom_text(data = info, aes(x = mut, label = pos ,y = -Inf), vjust = 0.2, hjust = 1.1, size = 6, angle = 90) + 
-       geom_text(data = data.frame(tag = "MUT", variable = "DP"), aes(x = Inf, label = tag, y = -Inf), vjust = 1.9, size = 7) + 
+       geom_text(data = data.frame(tag =   "", variable = "DP"), aes(x = Inf, label = tag, y = -Inf), vjust = 1.9, size = 7) + 
        geom_vline(xintercept = seq(1.5, length(unique(df1$mut)) - 0.5, 1), lwd = 1, linetype = 'dashed', colour = 'gray')
   return(p)
 }
