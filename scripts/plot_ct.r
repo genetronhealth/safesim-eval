@@ -74,7 +74,7 @@ myplot <- function(n){
        facet_grid(Company~., scales = 'free') +
        scale_shape_manual(values = c(65:76)) +
        scale_color_manual(values = c('black', '#f8766d', '#00ba38'), labels = c('Reference truth', 'Real variant', 'Simulated variant')) +
-       labs(title = paste(tools::toTitleCase(eval_tool), GVAR_space_Simulation, sep = ''),
+       labs(title = paste(tools::toTitleCase(eval_tool), sim.strategy, sep = ' '),
             x = GVAR_Mutation, y = GVAR_Allele_Fraction) +
        scale_x_discrete(labels = addline_format(gs1df$Anno[start:end])) +
        guides(color = guide_legend(title="Allele fraction type")) +
