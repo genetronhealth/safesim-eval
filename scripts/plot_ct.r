@@ -73,10 +73,11 @@ myplot <- function(n){
        geom_point(data = gs1df[start:end,], aes(x = mut, y = AF, color='GS'), shape = 95, size = 6) +
        facet_grid(Company~., scales = 'free') +
        scale_shape_manual(values = c(65:76)) +
-       scale_color_manual(values = c('black', '#f8766d', '#00ba38')) +
-       labs(title = paste(eval_tool, GVAR_space_Simulation, sep = ''),
+       scale_color_manual(values = c('black', '#f8766d', '#00ba38'), labels = c('Reference truth', 'Real variant', 'Simulated variant')) +
+       labs(title = paste(tools::toTitleCase(eval_tool), GVAR_space_Simulation, sep = ''),
             x = GVAR_Mutation, y = GVAR_Allele_Fraction) +
        scale_x_discrete(labels = addline_format(gs1df$Anno[start:end])) +
+       guides(color = guide_legend(title="Allele fraction type")) +
        theme(panel.spacing = unit(10, "lines"),
              text = element_text(size = 16),
              axis.text = element_text(size = 16, color = "black"),
@@ -84,10 +85,10 @@ myplot <- function(n){
              axis.title.x = element_text(vjust = 0), axis.ticks.x = element_blank(),
              plot.title = element_text(hjust = 0.5),
              panel.grid = element_blank()) + coord_cartesian(clip = "off") +
-             geom_text(data = cnt, aes(x = mut, label = "CNT", y = -Inf), vjust = 1 ,size = 7) +
+             geom_text(data = cnt, aes(x = mut, label = gs1df$CNT[start:end], y = -Inf), vjust = 1 ,size = 7) +
              geom_text(data = data.frame(tag = "CNT", Company = "ILM"), aes(x = Inf, label = tag, y = -Inf), vjust = 1.1, size = 7) +
              geom_text(data = info, aes(x = mut, label = pos, y = -Inf), vjust = 0.2, hjust = 1.1, size = 7, angle = 90) +
-             geom_text(data = data.frame(tag = "MUT", Company = "IDT"), aes(x = Inf, label = tag, y = -Inf), vjust = 1.9, size = 7) +
+             geom_text(data = data.frame(tag = "", Company = "IDT"), aes(x = Inf, label = tag, y = -Inf), vjust = 1.9, size = 7) +
              geom_vline(xintercept = seq(1.5, length(unique(df1$mut)) - 0.5, 1), lwd = 1, linetype = 'dashed', colour = 'gray')
   return(p)
 }
