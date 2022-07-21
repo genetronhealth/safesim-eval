@@ -27,13 +27,13 @@ GVAR_LowFA <- "Low-AF range"
 GVAR_MediumFA <- "Medium-AF range"
 GVAR_HighFA <- "High-AF range"
 
-GVAR_Lbx_high_Allele_Fraction_Z_score <- "Lbx_high real-data allele fraction (AF) z-score"
+GVAR_Lbx_high_Allele_Fraction_Z_score <- "Lbx_high real-variant allele fraction (AF) z-score"
 
-GVAR_Real_Data_Allele_Fraction_Z_score <- "Real-data allele fraction (AF) z-score"
-GVAR_Simulation_Allele_Fraction_Z_score <- "Simulation allele fraction (AF) z-score"
+GVAR_Real_Data_Allele_Fraction_Z_score <- "Real variant allele fraction (AF) z-score"
+GVAR_Simulation_Allele_Fraction_Z_score <- "Simulated variant allele fraction (AF) z-score"
 
-GVAR_space_QQplot <- " QQ-plot"
-GVAR_QQplot_WES <- "QQ-plot (WES)"
+GVAR_space_QQplot <- " Q-Q plot"
+GVAR_QQplot_WES <- "Q-Q plot (WES)"
 
 GVAR_Allele_Fraction_Variance <- "(allele_fraction_variance)" # with-underscore
 GVAR_space_Variance <- " variance" # not-start
@@ -42,18 +42,18 @@ GVAR_Allele_Fraction_Mean <- "(allele_fraction_mean)" # with-underscore
 GVAR_space_Mean <- " mean"
 GVAR_Mean <- "mean" # with-underscore
 
-GVAR_Simulation_WES <- "Simulation (WES)"
+GVAR_Simulation_WES <- "Simulation (WES)" # not-used
 GVAR_Value <- "Value"
-GVAR_QQplot_WES <- "QQ-plot (WES)"
+GVAR_QQplot_WES <- "Q-Q plot (WES)"
 GVAR_Variance_WES <- "Variance (WES)"
 GVAR_Mean_WES <- "Variance (WES)"
 
-GVAR_RealData_space <- "Real-data "
+GVAR_RealData_space <- "Real variant "
 
 GVAR_LBX_HIGH <- "Lbx_high real variant"
 GVAR_mean <- "mean"
 GVAR_variance <- "variance"
-GVAR_QQplot <- "QQ-plot"
+GVAR_QQplot <- "Q-Q plot"
 GVAR_AF_level <- "Allele\nfraction\nrange"
 
 GVAR_remove_duplicates_then_simulate <- "(ctDNA, remove duplicates then simulate)"
