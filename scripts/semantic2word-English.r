@@ -46,7 +46,7 @@ GVAR_Simulation_WES <- "Simulation (WES)" # not-used
 GVAR_Value <- "Value"
 GVAR_QQplot_WES <- "Q-Q plot (WES)"
 GVAR_Variance_WES <- "Variance (WES)"
-GVAR_Mean_WES <- "Variance (WES)"
+GVAR_Mean_WES <- "Mean (WES)"
 
 GVAR_RealData_space <- "Real variant "
 
