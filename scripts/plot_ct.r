@@ -197,11 +197,11 @@ df_var_ILM <- df_var[df_var$Company=="ILM",]
 #df_mean$AF_level <- factor(df_mean$AF_level, levels = c('Low', 'Medium', 'High'), labels = c(GVAR_Low, GVAR_Medium, GVAR_High))
 #df_var$AF_level <- factor(df_var$AF_level, levels = c('Low', 'Medium', 'High'), labels = c(GVAR_Low, GVAR_Medium, GVAR_High))
 
-qq_anno_text <- data.frame(Company = rep(c('IDT', 'ILM'),3), AF_level = rep(c('Low', 'Medium', 'High'), c(2,2,2)),label = sprintf("italic(y)==~italic(x)~','~italic(MSE)==%s",c(mse(IDT_l), mse(ILM_l),mse(IDT_m), mse(ILM_m), mse(IDT_h), mse(ILM_h))))
+qq_anno_text <- data.frame(Company = rep(c('IDT', 'ILM'),3), AF_level = rep(c('Low', 'Medium', 'High'), c(2,2,2)),label = sprintf("italic(MSE)==%s",c(mse(IDT_l), mse(ILM_l),mse(IDT_m), mse(ILM_m), mse(IDT_h), mse(ILM_h))))
 qq_anno_text$AF_level <- factor(qq_anno_text$AF_level, levels=c('Low', 'Medium', 'High'))
 #qq_anno_text$AF_level <- factor(qq_anno_text$AF_level, levels=c('Low', 'Medium', 'High'), labels = c(GVAR_Low, GVAR_Medium, GVAR_High))
-mean_anno_text <- data.frame(Company = c('IDT', 'ILM'), label = sprintf("italic(y)==~italic(x)~','~italic(MSE)==%s",c(mse(df_mean_IDT), mse(df_mean_ILM))))
-var_anno_text <- data.frame(Company = c('IDT', 'ILM'), label = sprintf("italic(y)==~italic(x)~','~italic(MSE)==%s",c(mse(df_var_IDT), mse(df_var_ILM))))
+mean_anno_text <- data.frame(Company = c('IDT', 'ILM'), label = sprintf("italic(MSE)==%s",c(mse(df_mean_IDT), mse(df_mean_ILM))))
+var_anno_text <- data.frame(Company = c('IDT', 'ILM'), label = sprintf("italic(MSE)==%s",c(mse(df_var_IDT), mse(df_var_ILM))))
 
 # QQ-plot
 int <- rep(0, 6)
@@ -220,7 +220,7 @@ p1 <- ggplot() +
       theme(text = element_text(size = 16),
             axis.text = element_text(size = 16, color = 'black'),
             plot.title = element_text(hjust = 0.5)) +
-      geom_text(data = qq_anno_text, aes(x = -0.6, y = 2, label = label), parse = T, size = 5) +
+      geom_text(data = qq_anno_text, aes(x = -0.6, y = 2, label = label), parse = T, size = 7) +
       geom_abline(data = dl, aes(slope = slope, intercept = int), color = 'red', linetype = 1)
       #scale_x_continuous(sec.axis = sec_axis(~ . , name = GVAR_AF_level, breaks = NULL, labels = NULL))
 ggsave(paste(prefix, 'ctDNA.qqplot.', eval_tool, '.pdf', sep = ''), p1, width = 8, height = 12)
@@ -229,7 +229,7 @@ ggsave(paste(prefix, 'ctDNA.qqplot.', eval_tool, '.pdf', sep = ''), p1, width = 
 p2 <- ggplot(data = df_var, aes(x = x, y = y, color = AF_level)) +
       geom_point(aes(shape = AF_level), size=3, alpha = 0.6) +
       geom_abline(aes(slope = 1, intercept = 0), color = 'black', linetype = 1) +
-      geom_text(data = var_anno_text, aes(x = -5, y = -3, label = label), color = 'black', parse = T, size = 6) +
+      geom_text(data = var_anno_text, aes(x = -5, y = -3, label = label), color = 'black', parse = T, size = 7) +
       facet_grid(.~Company) +
       labs(x = bquote(.(GVAR_LBX_HIGH) ~ log[10] ~ .(GVAR_Allele_Fraction_Variance)),
            y = bquote(.(GVAR_Simulation_space) ~ log[10] ~ .(GVAR_Allele_Fraction_Variance)),
@@ -238,13 +238,13 @@ p2 <- ggplot(data = df_var, aes(x = x, y = y, color = AF_level)) +
       theme(text = element_text(size = 16),
             axis.text = element_text(size = 16, color = "black"),
             plot.title = element_text(hjust = 0.5))
-ggsave(paste(prefix, 'ctDNA.var.', eval_tool, '.pdf', sep = ''), p2, width = 12, height = 8)
+ggsave(paste(prefix, 'ctDNA.var.', eval_tool, '.pdf', sep = ''), p2, width = 8, height = 6)
 
 # Mean scatter plot
 p3 <- ggplot(data = df_mean, aes(x = x, y = y, color = AF_level)) +
       geom_point(aes(shape = AF_level), size = 3, alpha = 0.6) +
       geom_abline(aes(slope = 1, intercept = 0), color = 'black', linetype = 1) +
-      geom_text(data = mean_anno_text, aes(x = -1.8, y = -1, label = label), color = 'black', parse = T, size = 6) +
+      geom_text(data = mean_anno_text, aes(x = -1.8, y = -1, label = label), color = 'black', parse = T, size = 7) +
       facet_grid(.~Company, scales = 'free') +
       labs(x = bquote(.(GVAR_LBX_HIGH) ~ log[10] ~ .(GVAR_Allele_Fraction_Mean)),
            y = bquote(.(GVAR_Simulation_space) ~ log[10] ~ .(GVAR_Allele_Fraction_Mean)),
@@ -253,7 +253,7 @@ p3 <- ggplot(data = df_mean, aes(x = x, y = y, color = AF_level)) +
       theme(text = element_text(size = 16),
             axis.text = element_text(size = 16, color = "black"),
             plot.title = element_text(hjust = 0.5))
-ggsave(paste(prefix, 'ctDNA.mean.', eval_tool, '.pdf', sep = ''), p3, width = 12, height = 8)
+ggsave(paste(prefix, 'ctDNA.mean.', eval_tool, '.pdf', sep = ''), p3, width = 8, height = 6)
 #p <- marrangeGrob(list(p1, p3, p2), nrow = 1, ncol = 1, top = NULL)
 #ggsave(paste(prefix, '.stats.pdf', sep = ''), p, width = 12, height = 8)
 

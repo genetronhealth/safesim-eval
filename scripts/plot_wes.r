@@ -154,19 +154,20 @@ mse <- function(data){
   return(mse)
 }
 
+# y.eq.x <- "italic(y)==~italic(x)~','~italic(MSE)=="
 mean_mse <- mse(df_mean)
 var_mse <- mse(df_var)
-anno_text <- data.frame(AF_level = c('Low', 'Medium', 'High'), label = sprintf("italic(y)==~italic(x)~','~italic(MSE)==%s",c(mse(df_l),mse(df_m),mse(df_h))))
+anno_text <- data.frame(AF_level = c('Low', 'Medium', 'High'), label = sprintf("italic(MSE)==%s", c(mse(df_l),mse(df_m),mse(df_h))))
 anno_text$AF_level <- factor(anno_text$AF_level, levels = c('Low','Medium', 'High'), labels = c(GVAR_LowFA, GVAR_MediumFA, GVAR_HighFA))
 
 p1 <- ggplot(data = df_qqplot, mapping = aes(x = x, y = y)) + 
-      facet_grid(.~AF_level) + geom_point(size=3, alpha = 0.2, shape=4) + 
+      facet_grid(AF_level~.) + geom_point(size=3, alpha = 0.2, shape=4) + 
       geom_abline(aes(slope = 1, intercept = 0), color = 'red', linetype = 1) + 
       labs(x = paste(GVAR_Real_Data_Allele_Fraction_Z_score) , y = paste(GVAR_Simulation_Allele_Fraction_Z_score), title = paste(tools::toTitleCase(eval_tool), GVAR_QQplot_WES),
            col = GVAR_AF_level, shape = GVAR_AF_level) + 
       theme(text = element_text(size = 18), axis.text = element_text(size = 18, color = "black"), plot.title = element_text(hjust = 0.5)) + 
-      geom_text(data = anno_text, mapping = aes(x = -0.6, y = 2, label = label), parse = T, size = 5)
-ggsave(paste(prefix, 'WES.qqplot.', eval_tool, '.pdf', sep = ''), p1, width = 12, height = 10)
+      geom_text(data = anno_text, mapping = aes(x = -0.6, y = 2, label = label), parse = T, size = 7)
+ggsave(paste(prefix, 'WES.qqplot.', eval_tool, '.pdf', sep = ''), p1, width = 8, height = 12)
 p2 <- ggplot(data = df_var, mapping = aes(x = x, y = y, color = AF_level)) + 
       geom_point(aes(shape = AF_level), size=3, alpha = 0.6) + 
       geom_abline(aes(slope = 1, intercept = 0), color = 'black', linetype = 1) + 
@@ -175,8 +176,8 @@ p2 <- ggplot(data = df_var, mapping = aes(x = x, y = y, color = AF_level)) +
            title = paste(tools::toTitleCase(eval_tool), GVAR_Variance_WES),
            col = GVAR_AF_level, shape = GVAR_AF_level) + 
       theme(text = element_text(size = 18), axis.text = element_text(size = 18, color = "black"), plot.title = element_text(hjust = 0.5)) + 
-      annotate(geom = "text", x= -3.6, y= -1.5, label = paste("italic(y)==~italic(x)~','~italic(MSE)==", var_mse), size = 7, parse = T) 
-ggsave(paste(prefix, 'WES.var.', eval_tool, '.pdf', sep = ''), p2, width = 12, height = 10)
+      annotate(geom = "text", x= -3.6, y= -1.5, label = paste("italic(MSE)==", var_mse), size = 7, parse = T) 
+ggsave(paste(prefix, 'WES.var.', eval_tool, '.pdf', sep = ''), p2, width = 8, height = 6)
 p3 <- ggplot(data = df_mean, mapping = aes(x = x, y = y, color = AF_level)) + 
       geom_point(aes(shape = AF_level), size=3, alpha = 0.6) + 
       geom_abline(aes(slope = 1, intercept = 0), color = 'black', linetype = 1) + 
@@ -185,8 +186,8 @@ p3 <- ggplot(data = df_mean, mapping = aes(x = x, y = y, color = AF_level)) +
            title = paste(tools::toTitleCase(eval_tool), GVAR_Mean_WES),
            col = GVAR_AF_level, shape = GVAR_AF_level) + 
       theme(text = element_text(size = 18), axis.text = element_text(size = 18, color = "black"), plot.title = element_text(hjust = 0.5)) + 
-      annotate(geom = "text", x = -1.2, y = -0.3, label = paste("italic(y)==~italic(x)~','~italic(MSE)==", mean_mse), size = 7, parse = T)
-ggsave(paste(prefix, 'WES.mean.', eval_tool, '.pdf', sep = ''), p3, width = 12, height = 10)
+      annotate(geom = "text", x = -1.2, y = -0.3, label = paste("italic(MSE)==", mean_mse), size = 7, parse = T)
+ggsave(paste(prefix, 'WES.mean.', eval_tool, '.pdf', sep = ''), p3, width = 8, height = 6)
 #p <- marrangeGrob(list(p1, p3, p2), nrow = 1, ncol = 1, top = NULL)
 #ggsave(paste(eval_tool, '_WES.stats.pdf', sep = ''), p, width = 12, height = 10)
 
