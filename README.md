@@ -1,4 +1,4 @@
-safemut evaluation instruction
+This README describes how to evaluate SafeMut with BamSurgeon and VarBen. 
 
 # Install Dependencies
 Java8, Python 2.7.15+, Python 3.8.10+ are presumed be installed, you may use conda to do python version management.
